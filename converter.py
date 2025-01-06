@@ -20,8 +20,8 @@ with open(sys.argv[1], mode="r", encoding="utf-8-sig") as input:
         p = pinyin_jyutping.PinyinJyutping()
 
         # we don't want duplicate translations so we need a set to keep
-        # track of the already added sentence ids
-        opened_sentence_ids = set()
+        # track of the already added sentence
+        seen_data_set = set()
 
         # check that we are actually parsing a csv file with 4 columns
         if len(next(reader)) != 4:
@@ -40,16 +40,23 @@ with open(sys.argv[1], mode="r", encoding="utf-8-sig") as input:
             
             # add the id to the set so that we 
             # can skip duplicates
-            if row[0] in opened_sentence_ids:
+            if row[0] in seen_data_set:
                 continue
-            opened_sentence_ids.add(row[0])
+            seen_data_set.add(row[0])
 
-            # remove the dot at the end
-            row[1] = row[1].removesuffix("。")
+            # remove the dot at the end and remove extra quotations at the end and beginning
+            row1 = row[1].rstrip("。")
+
+            # make sure we don't have more duplicates again after we removed the dot.
+            # it should be safe to use the same set since the respective column uses
+            # differing data types even though they are techincally strings
+            if row1 in seen_data_set:
+                continue
+            seen_data_set.add(row1)
 
             # the only reason we need this is to make a string where all the
             # words in character form are separated. This makes it easier to search for
-            words = p.pinyin_all_solutions(row[1])
+            words = p.pinyin_all_solutions(row1)
 
             # make the character string from the tokens
             separated = ""
@@ -62,12 +69,12 @@ with open(sys.argv[1], mode="r", encoding="utf-8-sig") as input:
             # or both?
             simplified = "NULL"
             traditional = "NULL"
-            if hanzidentifier.is_simplified(row[1]):
+            if hanzidentifier.is_simplified(row1):
                 simplified = separated
-            if hanzidentifier.is_traditional(row[1]):
+            if hanzidentifier.is_traditional(row1):
                 traditional = separated
 
             # write!
-            writer.writerow([simplified, traditional, p.pinyin(row[1], tone_numbers=True), row[3]])
+            writer.writerow([simplified, traditional, p.pinyin(row1, tone_numbers=True), row[3]])
 
 print("Done!")
