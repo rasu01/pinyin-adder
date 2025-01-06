@@ -3,7 +3,7 @@ A python script that adds pinyin to mandarin-english sentence pairs from tatoeba
 It also evaluates if the sentence is traditional, simplified, or both. It also takes the tokens by themselves and creates a string by putting spaces between them so that it becomes easier to search for specific words that exist inside a sentence using an sql database. For my specific usecase this was needed since I need to be able to distinguish words and their subwords so that they don't clash when I search for example sentences in my mandarin learning application. For example, the word "我们" also technically contain the word "我". But for the example sentence's sake, we don't want to search for the word "我" and getting sentences that contain "我们".
 
 # Sentence Source
-The source of the sentences were taken from https://tatoeba.org/. The specific file I downloaded was a "Mandarin Chinese" to "English" sentence pair and can be more specifically downloaded under "Sentence pairs" at https://tatoeba.org/en/downloads/.
+The source of the sentences("sentences_zh-en.tsv") were taken from https://tatoeba.org/. The specific file I downloaded was a "Mandarin Chinese" to "English" sentence pair and can be more specifically downloaded under "Sentence pairs" at https://tatoeba.org/en/downloads/.
 The content itself has the license "CC BY 2.0 FR". https://creativecommons.org/licenses/by/2.0/fr/
 
 # Dependencies
